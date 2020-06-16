@@ -417,8 +417,12 @@ public class ActiveDirectoryUnixAuthenticationProvider extends AbstractActiveDir
                             }
                         }
 
-                        Set<GrantedAuthority> groups = resolveGroups(domainDN, dnFormatted, context);
+                        Set<GrantedAuthority> groups = resolveGroups(user, context); //优先使用memberof来查找用户所在的组，如果没有在使用下面的方法
+                        if(groups.isEmpty()){
+                            groups = resolveGroups(domainDN, dnFormatted, context);
+                        }
                         groups.add(SecurityRealm.AUTHENTICATED_AUTHORITY);
+
 
                         cacheMiss[0] = new ActiveDirectoryUserDetail(username, password, true, true, true, true, groups.toArray(new GrantedAuthority[0]),
                                 getStringAttribute(user, "displayName"),
@@ -619,6 +623,19 @@ public class ActiveDirectoryUnixAuthenticationProvider extends AbstractActiveDir
         else
             principalName = username+'@'+domainName;
         return principalName;
+    }
+
+    private Set<GrantedAuthority> resolveGroups(Attributes user, DirContext context) throws NamingException {
+        Set<GrantedAuthority> groups = new HashSet<>();
+        Attribute memberOf = user.get("memberOf");
+        if (memberOf != null) {// null if this user belongs to no group at
+            for (int i = 0; i < memberOf.size(); i++) {
+                Attributes atts = context.getAttributes(memberOf.get(i).toString(), new String[]{"CN"});
+                Attribute att = atts.get("CN");
+                groups.add(new GrantedAuthorityImpl(att.get().toString()));
+            }
+        }
+        return groups;
     }
 
     /**
