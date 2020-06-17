@@ -9,7 +9,7 @@
 
   <artifactId>active-directory</artifactId>
   <packaging>hpi</packaging>
-  <version>2.17-SNAPSHOT</version>
+  <version>2.17</version>
   <name>Jenkins Active Directory plugin</name>
   <description>Enables authentication through Active Directory</description>
   <url>https://github.com/mamh-java/active-directory-plugin.git</url>
@@ -18,7 +18,7 @@
    <connection>scm:git:https://github.com/mamh-java/active-directory-plugin.git</connection>
    <developerConnection>scm:git:https://github.com/mamh-java/active-directory-plugin.git</developerConnection>
    <url>https://github.com/mamh-java/active-directory-plugin.git</url>
-    <tag>HEAD</tag>
+    <tag>active-directory-2.17</tag>
   </scm>
 
   <developers>
